@@ -13,11 +13,8 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
-    res.send("Welcome to ShortRoute API");
-});
-
 app.use("/api", urlRoutes);
+app.use("/", urlRoutes);
 
 const PORT = process.env.PORT || 8000;
 
