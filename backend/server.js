@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const urlRoutes = require("./routes/urlRoutes");
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ app.use(express.json());
 app.get("/", (req, res) => {
     res.send("Welcome to ShortRoute API");
 });
+
+app.use("/api", urlRoutes);
 
 const PORT = process.env.PORT || 8000;
 
