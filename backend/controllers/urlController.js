@@ -73,3 +73,111 @@ exports.redirectUrl = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 }
+
+exports.getAllUrls = async (req, res) => {
+    try {
+        const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get("host")}`;
+        const { search } = req.query;
+
+        const filter = {};
+
+        if (search && String(search).trim()) {
+            const searchRegex = new RegExp(String(search).trim(), "i");
+            filter.$or = [
+                { originalUrl: searchRegex },
+                { shortCode: searchRegex }
+            ];
+        }
+
+        const urls = await Url.find(filter)
+            .sort({ createdAt: -1 })
+            .limit(100)
+            .lean();
+
+        const formatted = urls.map((item) => ({
+            _id: item._id,
+            originalUrl: item.originalUrl,
+            shortCode: item.shortCode,
+            shortUrl: `${baseUrl}/${item.shortCode}`,
+            clickCount: item.clickCount,
+            createdAt: item.createdAt
+        }));
+
+        res.json({ urls: formatted });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+exports.deleteUrl = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const deleted = await Url.findByIdAndDelete(id);
+
+        if (!deleted) {
+            return res.status(404).json({ message: "URL not found" });
+        }
+
+        res.json({ message: "URL deleted" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+exports.getAnalyticsSummary = async (req, res) => {
+    try {
+        const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get("host")}`;
+
+        const [
+            totalUrls,
+            totalClicks,
+            topUrls,
+            recentUrls
+        ] = await Promise.all([
+            Url.countDocuments(),
+            Url.aggregate([
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: "$clickCount" }
+                    }
+                }
+            ]),
+            Url.find({})
+                .sort({ clickCount: -1, createdAt: -1 })
+                .limit(5)
+                .lean(),
+            Url.find({})
+                .sort({ createdAt: -1 })
+                .limit(5)
+                .lean()
+        ]);
+
+        const totalClicksValue = totalClicks?.[0]?.total || 0;
+
+        const formatUrl = (item) => ({
+            _id: item._id,
+            originalUrl: item.originalUrl,
+            shortCode: item.shortCode,
+            shortUrl: `${baseUrl}/${item.shortCode}`,
+            clickCount: item.clickCount,
+            createdAt: item.createdAt
+        });
+
+        res.json({
+            summary: {
+                totalUrls,
+                totalClicks: totalClicksValue,
+                averageClicks: totalUrls ? Number((totalClicksValue / totalUrls).toFixed(2)) : 0
+            },
+            topUrls: topUrls.map(formatUrl),
+            recentUrls: recentUrls.map(formatUrl)
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
