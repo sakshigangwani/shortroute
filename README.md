@@ -43,16 +43,7 @@ The system provides custom aliases, click tracking, QR code generation, and an a
 ---
 
 # 🏗 System Architecture
-User
-↓
-React Frontend (TypeScript + Vite)
-↓
-REST API (Node.js + Express)
-↓
-MongoDB Database
-↓
-URL Redirect Service
-
+User -> React Frontend (TypeScript + Vite) -> REST API (Node.js + Express) -> MongoDB Database -> URL Redirect Service
 
 When a user visits a shortened URL:
 Short URL → Backend → Lookup in database → Redirect to original URL
@@ -84,8 +75,6 @@ Click events are tracked and stored to power the analytics dashboard.
 ---
 
 # 📸 Screenshots
-
-Add screenshots of:
 
 - ![alt text](image.png)
 - ![alt text](image-1.png)
