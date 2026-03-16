@@ -12,6 +12,7 @@ export interface UrlItem {
   shortUrl: string
   clickCount: number
   createdAt: string
+  lastClickedAt: string | null
 }
 
 export interface AnalyticsSummary {

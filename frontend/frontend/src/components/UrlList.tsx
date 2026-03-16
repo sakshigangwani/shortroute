@@ -55,7 +55,9 @@ export default function UrlList() {
       {loading && <p>Loading...</p>}
       {error && <p className="error-text">{error}</p>}
 
-      {!loading && !error && urls.length === 0 && <p>No URLs to show yet.</p>}
+      {!loading && !error && urls.length === 0 && (
+        <p>{search.trim() ? "No matching URLs found." : "No URLs to show yet."}</p>
+      )}
 
       {!loading && !error && urls.map((item) => (
         <div className="url-item" key={item._id}>
@@ -63,6 +65,9 @@ export default function UrlList() {
             <a href={item.shortUrl} target="_blank" rel="noreferrer">{item.shortUrl}</a>
             <p>{item.originalUrl}</p>
             <p className="clicks">Created: {new Date(item.createdAt).toLocaleString()}</p>
+            <p className="clicks">
+              Last click: {item.lastClickedAt ? new Date(item.lastClickedAt).toLocaleString() : "No clicks yet"}
+            </p>
 
             {activeQrId === item._id && (
               <img

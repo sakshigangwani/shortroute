@@ -65,6 +65,7 @@ exports.redirectUrl = async (req, res) => {
         }
 
         url.clickCount += 1;
+        url.lastClickedAt = new Date();
         await url.save();
 
         res.redirect(url.originalUrl);
@@ -100,7 +101,8 @@ exports.getAllUrls = async (req, res) => {
             shortCode: item.shortCode,
             shortUrl: `${baseUrl}/${item.shortCode}`,
             clickCount: item.clickCount,
-            createdAt: item.createdAt
+            createdAt: item.createdAt,
+            lastClickedAt: item.lastClickedAt || null
         }));
 
         res.json({ urls: formatted });
@@ -164,7 +166,8 @@ exports.getAnalyticsSummary = async (req, res) => {
             shortCode: item.shortCode,
             shortUrl: `${baseUrl}/${item.shortCode}`,
             clickCount: item.clickCount,
-            createdAt: item.createdAt
+            createdAt: item.createdAt,
+            lastClickedAt: item.lastClickedAt || null
         });
 
         res.json({

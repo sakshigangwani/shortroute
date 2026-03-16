@@ -150,6 +150,7 @@ body {
 }
 
 .card input {
+  box-sizing: border-box;
   width: 100%;
   padding: 12px 13px;
   margin: 7px 0;

@@ -66,7 +66,12 @@ export default function AnalyticsDashboard() {
           {data.topUrls.length === 0 && <p>No data yet.</p>}
           {data.topUrls.map((item) => (
             <div className="mini-row" key={`top-${item._id}`}>
-              <a href={item.shortUrl} target="_blank" rel="noreferrer">{item.shortCode}</a>
+              <div>
+                <a href={item.shortUrl} target="_blank" rel="noreferrer">{item.shortCode}</a>
+                <p className="clicks">
+                  Last click: {item.lastClickedAt ? new Date(item.lastClickedAt).toLocaleString() : "No clicks yet"}
+                </p>
+              </div>
               <span className="clicks">{item.clickCount} clicks</span>
             </div>
           ))}
@@ -77,7 +82,12 @@ export default function AnalyticsDashboard() {
           {data.recentUrls.length === 0 && <p>No data yet.</p>}
           {data.recentUrls.map((item) => (
             <div className="mini-row" key={`recent-${item._id}`}>
-              <a href={item.shortUrl} target="_blank" rel="noreferrer">{item.shortCode}</a>
+              <div>
+                <a href={item.shortUrl} target="_blank" rel="noreferrer">{item.shortCode}</a>
+                <p className="clicks">
+                  Last click: {item.lastClickedAt ? new Date(item.lastClickedAt).toLocaleString() : "No clicks yet"}
+                </p>
+              </div>
               <span className="clicks">{new Date(item.createdAt).toLocaleDateString()}</span>
             </div>
           ))}
