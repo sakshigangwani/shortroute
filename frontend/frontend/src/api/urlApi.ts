@@ -1,8 +1,12 @@
 import axios from "axios";
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? "/api" : "https://shortroute.onrender.com/api")
+
 const API = axios.create({
-  baseURL: "https://shortroute.onrender.com/api",
-  timeout: 8000
+  baseURL: API_BASE_URL,
+  timeout: 70000
 });
 
 export interface UrlItem {

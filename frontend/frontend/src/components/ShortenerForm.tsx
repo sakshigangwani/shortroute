@@ -33,7 +33,10 @@ export default function ShortenerForm({ setShortUrl }: Props) {
 
       setShortUrl(nextShortUrl)
     } catch (err: any) {
-      const msg = err?.response?.data?.message || "Backend is not running or request failed"
+      const isTimeout = err?.code === "ECONNABORTED"
+      const msg = isTimeout
+        ? "Server is waking up. Please wait 30-60 seconds and try again."
+        : err?.response?.data?.message || "Backend is not running or request failed"
       setError(msg)
       setShortUrl("")
     } finally {
